@@ -1,0 +1,42 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: database
+  namespace: gasoline-tracker
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: database
+    spec:
+      containers:
+      - name: database
+        image: mysql:5.7
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: database-credentials
+                key: root-password
+          - name: MYSQL_DATABASE
+            value: gasoline-tracker
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: database-credentials
+                key: username
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: database-credentials
+                key: password
+        volumeMounts:
+          - name: database-storage
+            mountPath: /var/lib/mysql
+        ports:
+        - containerPort: 3306
+
+      volumes:
+      - name: database-storage
+        emptyDir: {}

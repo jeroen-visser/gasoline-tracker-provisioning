@@ -1,0 +1,17 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: gasoline-tracker
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: jvisser/gt-app-frontend:latest
+        ports:
+        - containerPort: 4200
