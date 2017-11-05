@@ -1,0 +1,41 @@
+version: "3.1"
+services:
+
+    mysql:
+      image: mysql:5.7
+      container_name: gt-mysql
+      working_dir: /application
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=gasoline-tracker
+        - MYSQL_USER=gasoline-tracker
+        - MYSQL_PASSWORD=gasoline-tracker
+      ports:
+       - "3306:3306"
+      volumes:
+       - database-volume:/var/lib/mysql
+
+    webserver:
+      image: jvisser/gt-webserver:latest
+      container_name: gt-webserver
+      ports:
+       - "80:80"
+      links:
+       - backend
+       - frontend
+
+    frontend:
+      image: jvisser/gt-app-frontend
+      container_name: gt-frontend
+      links:
+        - backend
+
+    backend:
+      image: jvisser/gt-app:latest
+      container_name: gt-backend
+      working_dir: /application
+      links:
+        - mysql
+
+volumes:
+  database-volume:
